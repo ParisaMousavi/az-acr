@@ -9,6 +9,6 @@ resource "azurerm_container_registry" "this" {
     enabled = true
   }
   tags = {
-    created-by = "terraform"
+    created-by = "iac-tf"
   }
 }
