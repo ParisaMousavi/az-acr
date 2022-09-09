@@ -8,7 +8,10 @@ resource "azurerm_container_registry" "this" {
     days    = 7
     enabled = true
   }
-  tags = {
-    created-by = "iac-tf"
-  }
+  tags = merge(
+    var.additional_tags,
+    {
+      created-by = "iac-tf"
+    },
+  )
 }
