@@ -18,3 +18,8 @@ variable "admin_enabled" {
 variable "name" {
   type = string
 }
+
+variable "additional_tags" {
+  default     = {}
+  type        = map(string)
+}
