@@ -20,6 +20,9 @@ resource "azurerm_container_registry" "this" {
 # https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration
 resource "azurerm_private_endpoint" "this" {
   count               = var.network_config.subnet_id == null ? 0 : 1
+  depends_on = [
+    azurerm_private_dns_zone.this
+  ]
   name                = "${var.name}-pe"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -36,7 +39,7 @@ resource "azurerm_private_endpoint" "this" {
     name                 = azurerm_private_dns_zone.this[0].name
     private_dns_zone_ids = [azurerm_private_dns_zone.this[0].id]
   }
-
+  
   tags = merge(
     var.additional_tags,
     {
@@ -49,6 +52,12 @@ resource "azurerm_private_dns_zone" "this" {
   count               = var.network_config.subnet_id == null ? 0 : 1
   name                = "privatelink.azurecr.io"
   resource_group_name = var.resource_group_name
+  tags = merge(
+    var.additional_tags,
+    {
+      created-by = "iac-tf"
+    },
+  )
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "this" {
