@@ -7,7 +7,7 @@ variable "location" {
 }
 
 variable "sku" {
-  type    = string
+  type = string
 }
 
 variable "admin_enabled" {
@@ -20,6 +20,15 @@ variable "name" {
 }
 
 variable "additional_tags" {
-  default     = {}
-  type        = map(string)
+  default = {}
+  type    = map(string)
 }
+
+
+variable "network_config" {
+  type = object({
+    virtual_network_id = string
+    subnet_id          = string
+  })
+}
+
