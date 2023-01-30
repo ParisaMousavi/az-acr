@@ -36,6 +36,13 @@ resource "azurerm_private_endpoint" "this" {
     name                 = azurerm_private_dns_zone.this[0].name
     private_dns_zone_ids = [azurerm_private_dns_zone.this[0].id]
   }
+
+  tags = merge(
+    var.additional_tags,
+    {
+      created-by = "iac-tf"
+    },
+  )
 }
 
 resource "azurerm_private_dns_zone" "this" {
