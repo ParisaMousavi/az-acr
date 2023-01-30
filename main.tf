@@ -33,8 +33,8 @@ resource "azurerm_private_endpoint" "this" {
   }
 
   private_dns_zone_group {
-    name                 = azurerm_private_dns_zone.this.name
-    private_dns_zone_ids = [azurerm_private_dns_zone.this.id]
+    name                 = azurerm_private_dns_zone.this[0].name
+    private_dns_zone_ids = [azurerm_private_dns_zone.this[0].id]
   }
 }
 
@@ -48,6 +48,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "this" {
   count                 = var.network_config.virtual_network_id == null ? 0 : 1
   name                  = "${var.name}-vnet2dns"
   resource_group_name   = var.resource_group_name
-  private_dns_zone_name = azurerm_private_dns_zone.this.name
+  private_dns_zone_name = azurerm_private_dns_zone.this[0].name
   virtual_network_id    = var.virtual_network_id
 }
