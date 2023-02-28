@@ -32,3 +32,14 @@ variable "network_config" {
   })
 }
 
+variable "public_network_access_enabled" {
+  type = bool
+  default = true
+}
+
+variable "network_rule_set" {
+  type= object({
+    allow_ip_ranges = list(string)
+    allow_subnet_ids = list(string)
+  }) 
+}

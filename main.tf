@@ -8,6 +8,24 @@ resource "azurerm_container_registry" "this" {
     days    = 7
     enabled = true
   }
+  public_network_access_enabled = var.public_network_access_enabled
+  network_rule_set {
+    default_action = "Deny"
+    dynamic "ip_rule" {
+      for_each = var.network_rule_set.allow_ip_ranges
+      content {
+        action   = "Allow"
+        ip_range = ip_rule.value
+      }
+    }
+    dynamic "virtual_network" {
+      for_each = var.network_rule_set.allow_subnet_ids
+      content {
+        action    = "Allow"
+        subnet_id = virtual_network.value
+      }
+    }
+  }
   tags = merge(
     var.additional_tags,
     {
@@ -19,7 +37,7 @@ resource "azurerm_container_registry" "this" {
 # Deployment Private Endpoint
 # https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration
 resource "azurerm_private_endpoint" "this" {
-  count               = var.network_config.subnet_id == null ? 0 : 1
+  count = var.network_config.subnet_id == null ? 0 : 1
   depends_on = [
     azurerm_private_dns_zone.this
   ]
@@ -39,7 +57,7 @@ resource "azurerm_private_endpoint" "this" {
     name                 = azurerm_private_dns_zone.this[0].name
     private_dns_zone_ids = [azurerm_private_dns_zone.this[0].id]
   }
-  
+
   tags = merge(
     var.additional_tags,
     {
