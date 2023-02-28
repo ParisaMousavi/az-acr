@@ -1,3 +1,14 @@
+locals {
+  allowed_subnets = [for s in var.network_rule_set.allow_subnet_ids : {
+    action    = "Allow",
+    subnet_id = s
+  }]
+  allowed_ips = [for p in var.network_rule_set.allow_ip_ranges : {
+    action   = "Allow",
+    ip_range = p
+  }]
+}
+
 resource "azurerm_container_registry" "this" {
   name                = var.name
   resource_group_name = var.resource_group_name
@@ -10,21 +21,9 @@ resource "azurerm_container_registry" "this" {
   }
   public_network_access_enabled = var.public_network_access_enabled
   network_rule_set {
-    default_action = "Deny"
-    dynamic "ip_rule" {
-      for_each = var.network_rule_set.allow_ip_ranges
-      content {
-        action   = "Allow"
-        ip_range = ip_rule.value
-      }
-    }
-    dynamic "virtual_network" {
-      for_each = var.network_rule_set.allow_subnet_ids
-      content {
-        action    = "Allow"
-        subnet_id = virtual_network.value
-      }
-    }
+    default_action  = "Deny"
+    ip_rule         = local.allowed_ips
+    virtual_network = local.allowed_subnets
   }
   tags = merge(
     var.additional_tags,
