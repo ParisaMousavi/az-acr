@@ -40,7 +40,7 @@ resource "azurerm_private_endpoint" "this" {
   name                = "${var.name}-pe"
   location            = var.location
   resource_group_name = var.resource_group_name
-  subnet_id           = var.network_config.subnet_id
+  subnet_id           = var.private_endpoint_config.subnet_id
   private_service_connection {
     name                           = "${var.name}-psc"
     is_manual_connection           = false
