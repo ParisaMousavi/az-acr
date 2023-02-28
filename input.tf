@@ -25,10 +25,12 @@ variable "additional_tags" {
 }
 
 
-variable "network_config" {
+variable "private_endpoint_config" {
   type = object({
-    virtual_network_id = string
-    subnet_id          = string
+    subnet_id             = optional(string, null)
+    virtual_network_id    = optional(string)
+    private_dns_zone_id   = optional(string)
+    private_dns_zone_name = optional(string)
   })
 }
 
@@ -43,4 +45,5 @@ variable "network_rule_set" {
     allow_ip_ranges  = list(string)
     allow_subnet_ids = list(string)
   })
+
 }
