@@ -27,10 +27,8 @@ variable "additional_tags" {
 
 variable "private_endpoint_config" {
   type = object({
-    subnet_id             = optional(string, null)
-    virtual_network_id    = optional(string)
-    private_dns_zone_id   = optional(string)
-    private_dns_zone_name = optional(string)
+    subnet_id           = optional(string, null)
+    private_dns_zone_id = optional(string)
   })
 }
 
